@@ -1,6 +1,8 @@
 # Anchor Constraints Analyzer
 
-This tool analyzes security of constraints in Solana programs written with Anchor. The main idea is to make sure that all accounts in constraints are "defined" by something. Note that this doesn't mean that constraints do not have bugs at all. It just performs a basic static analysis, which can be useful to find simple security bugs.
+This tool analyzes security of constraints in Solana programs written with Anchor. The main idea is to make sure that all accounts in constraints are "defined" by something. 
+
+**Note** that this doesn't mean that constraints do not have bugs at all. It just performs a basic static analysis, which can be useful to find simple security bugs.
 
 ### How it works
 
