@@ -63,3 +63,10 @@ Here are 3 accounts `order`, `mint` and `order_ata`. The `order` account is cons
 In case some accounts are not defined by anything, it may be the first place to look for bugs of missing checks. 
 
 Of course, in this way we do not look at checks inside an instruction processing function and do not analyze accounts in depth, which may yield false-positives or sometimes true-negatives. However, it may help to find simple bugs to save time, especially on a large codebase.
+
+### How to run
+
+```bash
+pip3 install -r requirements.txt
+python3 run.py <source code file or directory>
+```
