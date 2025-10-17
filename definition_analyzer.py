@@ -362,26 +362,56 @@ class DefinitionAnalyzer:
             definition.issues.append("Missing 'associated_token::mint' constraint")
         else:
             mint_ref = account.associated_token.mint
-            if mint_ref in known_accounts:
+            mint_accounts = self._extract_references_from_expression(mint_ref) if '.' in mint_ref else {mint_ref}
+
+            found_mint = False
+            for mint_account in mint_accounts:
+                if mint_account in known_accounts:
+                    definition.defined_by.append(DefinitionSource(
+                        source_type="account",
+                        source_name=mint_account,
+                        details="Associated token mint"
+                    ))
+                    found_mint = True
+                    break
+
+            if not found_mint and mint_ref in known_accounts:
                 definition.defined_by.append(DefinitionSource(
                     source_type="account",
                     source_name=mint_ref,
                     details="Associated token mint"
                 ))
-            else:
+                found_mint = True
+
+            if not found_mint:
                 definition.issues.append(f"Mint reference '{mint_ref}' not found in accounts")
 
         if not account.associated_token.authority:
             definition.issues.append("Missing 'associated_token::authority' constraint")
         else:
             authority_ref = account.associated_token.authority
-            if authority_ref in known_accounts:
+            authority_accounts = self._extract_references_from_expression(authority_ref) if '.' in authority_ref else {authority_ref}
+
+            found_authority = False
+            for authority_account in authority_accounts:
+                if authority_account in known_accounts:
+                    definition.defined_by.append(DefinitionSource(
+                        source_type="account",
+                        source_name=authority_account,
+                        details="Associated token authority"
+                    ))
+                    found_authority = True
+                    break
+
+            if not found_authority and authority_ref in known_accounts:
                 definition.defined_by.append(DefinitionSource(
                     source_type="account",
                     source_name=authority_ref,
                     details="Associated token authority"
                 ))
-            else:
+                found_authority = True
+
+            if not found_authority:
                 definition.issues.append(f"Authority reference '{authority_ref}' not found in accounts")
 
         # Determine status
