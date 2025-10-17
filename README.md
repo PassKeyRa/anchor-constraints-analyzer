@@ -27,7 +27,7 @@ pub struct UpdateConfig<'info> {
 }
 ```
 
-The idea is to check the definition of each account - `authority` and `config` in this case. It means that each account should have a minimum number of correct checks. The `config` account doesn't have `init` or `init_if_needed` constraints, which means that it should be already initialized before via the program and here is used also to verify the `authority` account via its seeds. This means that the `authority` account is defined via `config`'s seeds. Th `config` account is considered defined using its seeds by default.
+The idea is to check the definition of each account - `authority` and `config` in this case. It means that each account should have a minimum number of correct checks. The `config` account doesn't have `init` or `init_if_needed` constraints, which means that it should be already initialized before via the program and here is used also to verify the `authority` account via its seeds. This means that the `authority` account is defined via `config`'s seeds. The `config` account is considered defined using its seeds by default.
 
 Now the next example:
 
