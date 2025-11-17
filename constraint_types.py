@@ -122,15 +122,13 @@ class AccountField:
                 self.associated_token is not None and
                 self.associated_token.is_defined())
 
-    def get_referenced_accounts(self) -> List[str]:
+    def get_references(self) -> List[str]:
         references = []
         if self.seeds:
             for seed in self.seeds.seeds:
-                refs = self._extract_account_refs(seed)
-                references.extend(refs)
-            if self.seeds.bump and '.' in self.seeds.bump:
-                ref = self.seeds.bump.split('.')[0]
-                references.append(ref)
+                references.append(seed)
+            if self.seeds.bump:
+                references.append(self.seeds.bump)
 
         if self.associated_token:
             if self.associated_token.mint:
@@ -141,8 +139,7 @@ class AccountField:
                 references.append(self.associated_token.token_program)
 
         for constraint in self.custom_constraints:
-            refs = self._extract_account_refs(constraint.expression)
-            references.extend(refs)
+            references.extend(constraint.expression)
 
         references.extend(self.has_one)
 
@@ -150,13 +147,6 @@ class AccountField:
             references.append(self.payer)
 
         return list(set(references))
-
-    def _extract_account_refs(self, expression: str) -> List[str]:
-        import re
-        pattern = r'\b([a-z_][a-z0-9_]*)\s*\.'
-        matches = re.findall(pattern, expression)
-        excluded = {'self', 'ctx', 'Some', 'None', 'Ok', 'Err'}
-        return [m for m in matches if m not in excluded]
 
     def __repr__(self):
         parts = [f"{self.name}: {self.type_name}"]

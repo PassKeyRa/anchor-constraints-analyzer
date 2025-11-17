@@ -583,7 +583,7 @@ def main():
             if account.address:
                 print(f"    Address: {account.address}")
 
-            refs = account.get_referenced_accounts()
+            refs = account.get_references()
             if refs:
                 print(f"    References: {', '.join(refs)}")
 

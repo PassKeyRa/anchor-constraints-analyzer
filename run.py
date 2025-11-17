@@ -3,6 +3,7 @@
 import sys
 import argparse
 import json
+import os
 from pathlib import Path
 
 from constraint_extractor import extract_constraints_from_file
@@ -11,6 +12,7 @@ from definition_analyzer import (
     save_definition_graph,
     print_analysis_summary
 )
+from mermaid_generator import get_mermaid
 
 
 def find_rust_files(path):
@@ -48,7 +50,7 @@ def analyze_single_file(filepath, output_path=None, quiet=False):
         results.append({
             'file': str(filepath),
             'struct': constraints.name,
-            'graph': graph.to_dict()
+            'graph': graph
         })
 
     if output_path and len(constraints_list) == 1:
@@ -68,9 +70,10 @@ def main():
     parser.add_argument(
         "output_path",
         nargs="?",
-        help="Output path for definition graph (JSON). For directories, aggregates all results."
+        help="Output path for definition graph (Mermaid format). For directories, aggregates all results."
     )
     parser.add_argument(
+        "-q",
         "--quiet",
         action="store_true",
         help="Suppress console output, only save to file"
@@ -102,19 +105,16 @@ def main():
             print("\n" + "=" * 80 + "\n")
 
     if args.output_path:
+        if os.path.exists(args.output_path):
+            print("The output file already exists! Exiting")
+            exit(1)
         output_path = Path(args.output_path)
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
-        if len(all_results) == 1:
-            with open(output_path, 'w') as f:
-                f.write(json.dumps(all_results[0]['graph'], indent=2))
-        else:
-            with open(output_path, 'w') as f:
-                f.write(json.dumps({
-                    'total_files': len(rust_files),
-                    'total_structs': len(all_results),
-                    'results': all_results
-                }, indent=2))
+        for result in all_results:
+            mm = get_mermaid(result['graph'])
+            with open(output_path, 'a') as f:
+                f.write(f"```mermaid\n{mm}\n```\n\n")
 
         print(f"Results saved to {output_path}")
 
