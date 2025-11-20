@@ -2,7 +2,7 @@ from definition_analyzer import DefinitionGraph, DefinitionStatus
 
 def get_mermaid(graph: DefinitionGraph):
     result = ""
-    result += f"---\ntitle: {graph.source_file + ":" + graph.struct_name}\n---"
+    #result += f"---\ntitle: {graph.source_file + ":" + graph.struct_name}\n---"
     result += "\n%%{ init: { 'flowchart': { 'curve': 'catmullRom', 'defaultRenderer': 'elk' } } }%%"
     result += "\ngraph BT"
 
@@ -14,9 +14,15 @@ def get_mermaid(graph: DefinitionGraph):
         result += f"\n\ta{i+1}[\"{account_name}\"]"
         nodes_map[account_name] = f"a{i+1}"
     
+    for i in range(len(graph.instruction_args)):
+        instr_name = graph.instruction_args[i]
+        result += f"\n\ti{i+1}([\"{instr_name}\"])"
+        nodes_map[instr_name]= f"i{i+1}"
+        styles.append(f"style {nodes_map[instr_name]} stroke:#f80")
+    
     for i in range(len(graph.constants)):
         const_name = graph.constants[i]
-        result += f"\n\tc{i+1}[\"{const_name}\"]"
+        result += f"\n\tc{i+1}(\"{const_name}\")"
         nodes_map[const_name]= f"c{i+1}"
         styles.append(f"style {nodes_map[const_name]} stroke:#0f0")
     

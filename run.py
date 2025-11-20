@@ -112,9 +112,11 @@ def main():
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
         for result in all_results:
+            title = result['graph'].source_file + ":" + result['graph'].struct_name
             mm = get_mermaid(result['graph'])
             with open(output_path, 'a') as f:
-                f.write(f"```mermaid\n{mm}\n```\n\n")
+                f.write(f"### {title}\n")
+                f.write(f"```mermaid\n{mm}\n```\n\n\n")
 
         print(f"Results saved to {output_path}")
 
