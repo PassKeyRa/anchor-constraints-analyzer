@@ -68,61 +68,13 @@ Of course, in this way we do not look at checks inside an instruction processing
 
 The script allows also to write a Mermaid graph to visualize accounts, constants and instruction arguments connections. This makes it easier to understand all the relations between accounts. Below is the example for the `CreateEscrow` constraints graph from the 1inch cross-chain protocol ([link](https://github.com/1inch/solana-crosschain-protocol/blob/58b8a428f24302ea9e36c31336e36f9c20a696fa/programs/cross-chain-escrow-src/src/lib.rs#L677)):
 
-```mermaid
-
-%%{ init: { 'flowchart': { 'curve': 'catmullRom', 'defaultRenderer': 'elk' } } }%%
-graph BT
-	a1["taker"]
-	a2["resolver_access"]
-	a3["maker"]
-	a4["mint"]
-	a5["order"]
-	a6["order_ata"]
-	a7["escrow"]
-	a8["escrow_ata"]
-	a9["associated_token_program"]
-	a10["token_program"]
-	a11["system_program"]
-	i1(["amount"])
-	i2(["merkle_proof"])
-	c1("'order'.as_bytes()")
-	c2("ID.as_ref()")
-	c3("'escrow'.as_bytes()")
-
-	a2 -->|contains_as_seed| a1
-	c2 -->|constant_seed| a2
-	a1 -->|seed| a2
-	a5 -->|custom| a3
-	a5 -->|custom| a4
-	c1 -->|constant_seed| a5
-	a5 -->|fields_seed| a5
-	a4 -->|AT_mint| a6
-	a5 -->|AT_authority| a6
-	c3 -->|constant_seed| a7
-	a5 -->|fields_seed| a7
-	i2 -->|seed| a7
-	a1 -->|seed| a7
-	i1 -->|seed| a7
-	a4 -->|AT_mint| a8
-	a7 -->|AT_authority| a8
-
-	style i1 stroke:#f80
-	style i2 stroke:#f80
-	style c1 stroke:#0f0
-	style c2 stroke:#0f0
-	style c3 stroke:#0f0
-	linkStyle 3 stroke:#f80
-	style a3 stroke:#f80
-	linkStyle 4 stroke:#f80
-	style a4 stroke:#f80
-	style a9 stroke:#0f0
-	style a10 stroke:#0f0
-	style a11 stroke:#0f0
-```
+![](./img/1.png)
 
 For example, we see that the `order` account is defined by the `'order'` constant (`constant_seed` relation) and its own fields (`fields_seed`), since the account should already be initialized. The `order_ata` is defined by the `mint` and the `order` accounts.
 
 **Green** boxes are constants or default system accounts. **Yellow** are accounts, connections or instruction arguments, which should be checked manually. **Red** boxes highlight accounts that aren't defined by anything and potentially may cause problems.
+
+For better graph rendering it is recommended to use the Mermaid extension, which supports the `elk` renderer. For example, the [Markdown Preview Mermaid Support](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid) supports it.
 
 ### How to run
 
