@@ -55,6 +55,7 @@ class AccountDefinition:
     status: DefinitionStatus
     defined_by: List[DefinitionSource] = field(default_factory=list)
     issues: List[str] = field(default_factory=list)
+    is_inited: bool = False
     line_number: Optional[int] = None
 
     def to_dict(self):
@@ -164,8 +165,8 @@ class DefinitionAnalyzer:
         or has_one of non-init accounts (reverse definition).
         """
         for account in self.constraints.accounts:
-            # Skip init accounts - they don't validate other accounts
             if account.is_init or account.is_init_if_needed:
+                self.graph.accounts[account.name].is_inited = True
                 continue
 
             # Check has_one reverse definitions first (more specific)
@@ -253,6 +254,7 @@ class DefinitionAnalyzer:
                 details="Fixed address constraint"
             ))
             definition.status = DefinitionStatus.DEFINED
+            self.constants_cache.add(account.address)
             return definition
 
         # Check if it's defined by seeds (without init/init_if_needed)

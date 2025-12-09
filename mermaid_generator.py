@@ -1,4 +1,5 @@
 from definition_analyzer import DefinitionGraph, DefinitionStatus
+import json
 
 def get_mermaid(graph: DefinitionGraph):
     result = ""
@@ -44,6 +45,8 @@ def get_mermaid(graph: DefinitionGraph):
 
             a = nodes_map[def_.source_name]
             label = def_.connection_type
+            if graph.accounts[account_name].is_inited and 'seed' in label:
+                label = "init_" + label
             if def_.source_type == "constant":
                 label = "constant_" + label
             if def_.source_field_name and def_.connection_type not in ["custom"]:
