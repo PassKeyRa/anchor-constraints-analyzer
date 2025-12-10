@@ -4,7 +4,8 @@ import json
 def get_mermaid(graph: DefinitionGraph):
     result = ""
     #result += f"---\ntitle: {graph.source_file + ":" + graph.struct_name}\n---"
-    result += "\n%%{ init: { 'flowchart': { 'curve': 'catmullRom', 'defaultRenderer': 'elk' } } }%%"
+    #result += "\n%%{ init: { 'flowchart': { 'curve': 'catmullRom', 'defaultRenderer': 'elk' } } }%%"
+    result += "\n%%{ init: { 'flowchart': { 'defaultRenderer': 'elk' } } }%%"
     result += "\ngraph BT"
 
     styles = []
