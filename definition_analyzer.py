@@ -180,7 +180,7 @@ class DefinitionAnalyzer:
             # Check seeds-based reverse definitions
             if account.seeds and account.account_type != AccountType.ASSOCIATED_TOKEN:
                 # Get accounts referenced in seeds, excluding has_one accounts
-                refs = account.get_references()
+                refs = account.get_references(seeds_=True, ata_=False, custom_=False, has_one_=False, payer_=False)
 
                 for ref in refs:
                     self._apply_reverse_definition(

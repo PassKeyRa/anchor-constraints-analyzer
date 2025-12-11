@@ -122,15 +122,15 @@ class AccountField:
                 self.associated_token is not None and
                 self.associated_token.is_defined())
 
-    def get_references(self) -> List[str]:
+    def get_references(self, seeds_=True, ata_=True, custom_=True, has_one_=True, payer_=True) -> List[str]:
         references = []
-        if self.seeds:
+        if self.seeds and seeds_:
             for seed in self.seeds.seeds:
                 references.append(seed)
             if self.seeds.bump:
                 references.append(self.seeds.bump)
 
-        if self.associated_token:
+        if self.associated_token and ata_:
             if self.associated_token.mint:
                 references.append(self.associated_token.mint)
             if self.associated_token.authority:
@@ -138,13 +138,16 @@ class AccountField:
             if self.associated_token.token_program:
                 references.append(self.associated_token.token_program)
 
-        for constraint in self.custom_constraints:
-            references.extend(constraint.expression)
+        if custom_:
+            for constraint in self.custom_constraints:
+                references.extend(constraint.expression)
 
-        references.extend(self.has_one)
+        if has_one_:
+            references.extend(self.has_one)
 
-        if self.payer:
-            references.append(self.payer)
+        if payer_:
+            if self.payer:
+                references.append(self.payer)
 
         return list(set(references))
 
